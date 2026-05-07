@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
-const W_PINK = "/images/w_pink.webp"
-const W_BLUE_NYLON = "/images/w_blue_nylon.webp"
-const W_GREEN = "/images/w_green.webp"
-const W_BLUE_BLACK = "/images/w_blue_black.webp"
-const W_CARBON_RED = "/images/w_carbon_red.webp"
+const W_PINK = "/images/w_pink.jpg"
+const W_BLUE_NYLON = "/images/w_blue_nylon.jpg"
+const W_GREEN = "/images/w_green.jpg"
+const W_BLUE_BLACK = "/images/w_blue_black.jpg"
+const W_CARBON_RED = "/images/w_carbon_red.jpg"
 
 const WATCHES = [
   {
@@ -64,9 +64,10 @@ function Cart({ cart, onRemove, onClose, accent, onCheckout, checkoutLoading, ch
   return (
     <div style={{position:"fixed",inset:0,zIndex:1000}} onClick={onClose}>
       <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.9)",backdropFilter:"blur(12px)"}}/>
-      <div onClick={e=>e.stopPropagation()} style={{
+      <div className="v-cart-panel" onClick={e=>e.stopPropagation()} style={{
         position:"absolute",right:0,top:0,bottom:0,width:390,
         background:"#060606",borderLeft:"1px solid #141414",
+        
         display:"flex",flexDirection:"column",
         animation:"slideIn .3s cubic-bezier(.4,0,.2,1)",
       }}>
@@ -161,7 +162,7 @@ function AccountModal({ onClose, accent, account, setAccount }) {
   return (
     <div style={{position:"fixed",inset:0,zIndex:1100}} onClick={onClose}>
       <div style={{position:"absolute",inset:0,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(14px)"}}/>
-      <div onClick={e=>e.stopPropagation()} style={{
+      <div className="v-account-modal" onClick={e=>e.stopPropagation()} style={{
         position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",
         width:420,maxWidth:"92vw",
         background:"#060606",border:`1px solid ${accent}33`,borderRadius:6,
@@ -243,6 +244,7 @@ export default function VoltWatches() {
   const [active, setActive] = useState(0);
   const [page, setPage] = useState("home");
   const [cart, setCart] = useState(() => {
+    // Load cart from localStorage on first render
     try {
       const saved = typeof window !== "undefined" && window.localStorage.getItem("volt_cart");
       return saved ? JSON.parse(saved) : [];
@@ -261,10 +263,12 @@ export default function VoltWatches() {
   const [checkoutError, setCheckoutError] = useState("");
   const w = WATCHES[active];
 
+  // Persist cart to localStorage on every change
   useEffect(() => {
     try { window.localStorage.setItem("volt_cart", JSON.stringify(cart)); } catch {}
   }, [cart]);
 
+  // Persist account to localStorage on every change
   useEffect(() => {
     try {
       if (account) window.localStorage.setItem("volt_account", JSON.stringify(account));
@@ -283,6 +287,7 @@ export default function VoltWatches() {
     setCheckoutError("");
     setCheckoutLoading(true);
     try {
+      // Demo mode: if no backend is reachable, show a friendly message
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -335,9 +340,44 @@ export default function VoltWatches() {
         .card:hover{transform:translateY(-8px);}
         .dot{transition:all .28s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:50%;overflow:hidden;}
         .dot:hover{transform:scale(1.12);}
+
+        /* === RESPONSIVE MOBILE === */
+        @media (max-width: 768px) {
+          .v-nav { padding: 0 4% !important; height: 56px !important; }
+          .v-nav-links { display: none !important; }
+          .v-nav-account-text { display: none !important; }
+          .v-nav-panier-text { font-size: 10px !important; padding: 6px 12px !important; }
+          .v-hero { flex-direction: column !important; min-height: auto !important; padding: 90px 0 40px !important; gap: 20px; }
+          .v-hero-left { flex: none !important; padding: 0 6% !important; width: 100% !important; box-sizing: border-box; }
+          .v-hero-right { flex: none !important; width: 100% !important; padding: 0 6% !important; order: -1; }
+          .v-hero-watch-img { width: 70vw !important; max-width: 320px !important; }
+          .v-hero-bg-text { display: none !important; }
+          .v-hero-side-strips { display: none !important; }
+          .v-hero-h1 { font-size: 42px !important; line-height: 0.95 !important; }
+          .v-hero-grid-specs { grid-template-columns: 1fr 1fr !important; }
+          .v-grid-section { padding: 50px 5% !important; }
+          .v-grid-header { flex-direction: column !important; gap: 16px; align-items: flex-start !important; margin-bottom: 30px !important; }
+          .v-grid-h2 { font-size: 36px !important; }
+          .v-watches-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+          .v-watch-card { padding: 14px 8px !important; }
+          .v-watch-card img { height: 110px !important; }
+          .v-dna-section { padding: 50px 6% !important; }
+          .v-dna-flex { flex-direction: column !important; gap: 30px !important; }
+          .v-dna-h3 { font-size: 32px !important; }
+          .v-dna-image { width: 200px !important; }
+          .v-dna-stats { gap: 20px !important; }
+          .v-detail-section { padding: 30px 5% !important; }
+          .v-detail-flex { flex-direction: column !important; gap: 30px !important; }
+          .v-detail-img { width: 240px !important; }
+          .v-detail-h1 { font-size: 42px !important; }
+          .v-cart-panel { width: 100vw !important; max-width: 100vw !important; }
+          .v-account-modal { width: 92vw !important; padding: 26px 22px !important; }
+          .v-footer { flex-wrap: wrap !important; gap: 12px !important; padding: 20px 5% !important; justify-content: center !important; text-align: center; }
+        }
       `}</style>
 
-      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:200,height:64,display:"flex",alignItems:"center",padding:"0 5%",background:"rgba(4,4,4,0.97)",backdropFilter:"blur(20px)",borderBottom:`1px solid ${w.accent}18`,transition:"border-color .6s"}}>
+      {/* NAV */}
+      <nav className="v-nav" style={{position:"fixed",top:0,left:0,right:0,zIndex:200,height:64,display:"flex",alignItems:"center",padding:"0 5%",background:"rgba(4,4,4,0.97)",backdropFilter:"blur(20px)",borderBottom:`1px solid ${w.accent}18`,transition:"border-color .6s"}}>
         <button onClick={()=>setPage("home")} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
           <svg width={30} height={30} viewBox="0 0 30 30">
             <rect x={1} y={1} width={28} height={28} rx={6} fill="none" stroke={w.accent} strokeWidth={1.5}/>
@@ -347,7 +387,7 @@ export default function VoltWatches() {
           <span style={{fontSize:8,color:"#252525",letterSpacing:3,marginTop:1}}>HOROLOGY</span>
         </button>
         <div style={{flex:1}}/>
-        <div style={{display:"flex",gap:2}}>
+        <div className="v-nav-links" style={{display:"flex",gap:2}}>
           {["COLLECTION","SAVOIR-FAIRE","BOUTIQUE"].map(l=><button key={l} className="nb">{l}</button>)}
         </div>
         <div style={{flex:1}}/>
@@ -365,7 +405,7 @@ export default function VoltWatches() {
               <circle cx={12} cy={8} r={4}/>
               <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
             </svg>
-            {account ? account.name.split(" ")[0].toUpperCase() : "COMPTE"}
+            <span className="v-nav-account-text">{account ? account.name.split(" ")[0].toUpperCase() : "COMPTE"}</span>
           </button>
           <button onClick={()=>setShowCart(true)} style={{
             background:"none",border:`1px solid ${w.accent}33`,borderRadius:4,
@@ -384,11 +424,13 @@ export default function VoltWatches() {
 
       {page==="home"&&(
         <div style={{paddingTop:64}}>
-          <section style={{minHeight:"100vh",display:"flex",alignItems:"center",position:"relative",overflow:"hidden",background:w.bg,transition:"background .8s ease"}}>
+          {/* HERO */}
+          <section className="v-hero" style={{minHeight:"100vh",display:"flex",alignItems:"center",position:"relative",overflow:"hidden",background:w.bg,transition:"background .8s ease"}}>
             <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(${w.accent}05 1px,transparent 1px),linear-gradient(90deg,${w.accent}05 1px,transparent 1px)`,backgroundSize:"55px 55px",pointerEvents:"none"}}/>
-            <div style={{position:"absolute",right:"-2%",bottom:"2%",fontWeight:900,fontSize:"clamp(80px,16vw,210px)",color:"rgba(255,255,255,0.016)",letterSpacing:-8,lineHeight:1,userSelect:"none"}}>{w.ref}</div>
+            <div className="v-hero-bg-text" style={{position:"absolute",right:"-2%",bottom:"2%",fontWeight:900,fontSize:"clamp(80px,16vw,210px)",color:"rgba(255,255,255,0.016)",letterSpacing:-8,lineHeight:1,userSelect:"none"}}>{w.ref}</div>
 
-            <div style={{flex:"0 0 44%",padding:"0 0 0 7%",animation:"fadeIn .5s",zIndex:2}}>
+            {/* LEFT */}
+            <div className="v-hero-left" style={{flex:"0 0 44%",padding:"0 0 0 7%",animation:"fadeIn .5s",zIndex:2}}>
               <div style={{display:"inline-flex",alignItems:"center",gap:10,marginBottom:26}}>
                 <div style={{width:24,height:1.5,background:w.accent}}/>
                 <span style={{fontSize:9,color:w.accent,letterSpacing:4,fontWeight:700}}>{w.limited}</span>
@@ -396,14 +438,14 @@ export default function VoltWatches() {
                   <span style={{fontSize:8,color:w.accent,letterSpacing:3}}>{w.badge}</span>
                 </div>
               </div>
-              <h1 style={{fontSize:"clamp(44px,5.5vw,78px)",fontWeight:900,color:"#fff",lineHeight:.9,letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>
+              <h1 className="v-hero-h1" style={{fontSize:"clamp(44px,5.5vw,78px)",fontWeight:900,color:"#fff",lineHeight:.9,letterSpacing:1,marginBottom:10,textTransform:"uppercase"}}>
                 {w.name.split(" ")[0]}<br/>
                 <span style={{color:w.accent}}>{w.name.split(" ").slice(1).join(" ")}</span>
               </h1>
               <div style={{fontSize:12,color:"#3a3a3a",letterSpacing:4,marginBottom:18,fontWeight:500}}>{w.tagline}</div>
               <div style={{width:42,height:2,background:w.accent,marginBottom:22,opacity:.8}}/>
               <p style={{fontSize:14,lineHeight:1.8,color:"#505050",maxWidth:380,marginBottom:34,fontFamily:"'Barlow',sans-serif",fontWeight:300}}>{w.description}</p>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 18px",marginBottom:36}}>
+              <div className="v-hero-grid-specs" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px 18px",marginBottom:36}}>
                 {[["MATIÈRE",w.material],["MOUVEMENT",w.movement],["BATTERIE",w.power],["ÉTANCHÉITÉ",w.water]].map(([k,v])=>(
                   <div key={k} style={{borderLeft:`2px solid ${w.accent}44`,paddingLeft:10}}>
                     <div style={{fontSize:8,color:"#2a2a2a",letterSpacing:3,marginBottom:2}}>{k}</div>
@@ -429,6 +471,7 @@ export default function VoltWatches() {
                   fontFamily:"'Barlow Condensed',sans-serif",fontSize:12,fontWeight:600,letterSpacing:3,borderRadius:3,
                 }}>DÉTAILS</button>
               </div>
+              {/* Color dots avec vraies photos */}
               <div style={{display:"flex",alignItems:"center",gap:12}}>
                 <span style={{fontSize:8,color:"#2a2a2a",letterSpacing:4}}>COLORIS</span>
                 {WATCHES.map((ww,i)=>(
@@ -444,15 +487,17 @@ export default function VoltWatches() {
               </div>
             </div>
 
-            <div style={{flex:1,display:"flex",justifyContent:"center",alignItems:"center",padding:"60px 20px",zIndex:2}}>
+            {/* CENTER — Watch photo SANS fond */}
+            <div className="v-hero-right" style={{flex:1,display:"flex",justifyContent:"center",alignItems:"center",padding:"60px 20px",zIndex:2}}>
               <div style={{position:"relative",animation:"float 5s ease-in-out infinite"}}>
+                {/* Glow au sol */}
                 <div style={{
                   position:"absolute",bottom:"-10%",left:"50%",transform:"translateX(-50%)",
                   width:"60%",height:24,background:w.accent,
                   borderRadius:"50%",filter:"blur(30px)",
                   opacity:.45,animation:"glowAnim 3s ease-in-out infinite",
                 }}/>
-                <img src={w.img} alt={w.name} style={{
+                <img className="v-hero-watch-img" src={w.img} alt={w.name} style={{
                   width:"clamp(260px,26vw,420px)",
                   objectFit:"contain",
                   filter:`drop-shadow(0 40px 60px rgba(0,0,0,1)) drop-shadow(0 0 60px ${w.glow})`,
@@ -461,7 +506,8 @@ export default function VoltWatches() {
               </div>
             </div>
 
-            <div style={{position:"absolute",right:30,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
+            {/* Nav strips */}
+            <div className="v-hero-side-strips" style={{position:"absolute",right:30,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:8,alignItems:"center"}}>
               <div style={{writingMode:"vertical-rl",fontSize:8,color:"#1e1e1e",letterSpacing:4,marginBottom:8}}>COLLECTION</div>
               {WATCHES.map((ww,i)=>(
                 <div key={ww.id} onClick={()=>setActive(i)} style={{
@@ -474,21 +520,21 @@ export default function VoltWatches() {
             </div>
           </section>
 
-          <section style={{padding:"80px 5%",background:"#020202"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:50}}>
+          {/* GRID */}
+          <section className="v-grid-section" style={{padding:"80px 5%",background:"#020202"}}>
+            <div className="v-grid-header" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:50}}>
               <div>
                 <div style={{fontSize:9,color:"#252525",letterSpacing:5,marginBottom:8}}>LA COLLECTION</div>
-                <h2 style={{fontSize:52,fontWeight:900,color:"#fff",letterSpacing:2,lineHeight:.9}}>
+                <h2 className="v-grid-h2" style={{fontSize:52,fontWeight:900,color:"#fff",letterSpacing:2,lineHeight:.9}}>
                   5 PIÈCES<br/><span style={{WebkitTextStroke:"1px #1e1e1e",color:"transparent"}}>UNIQUES</span>
                 </h2>
               </div>
               <div style={{textAlign:"right",fontSize:10,color:"#1a1a1a",letterSpacing:3,lineHeight:2}}>PRODUCTION LIMITÉE<br/>SWISS MADE</div>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
+            <div className="v-watches-grid" style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
               {WATCHES.map((ww,i)=>(
-                <div key={ww.id} className="card"
-                  onClick={()=>{setActive(i);window.scrollTo({top:0,behavior:"smooth"});}}
-                  style={{background:`linear-gradient(160deg,#0c0c0c,${ww.accent}12)`,border:`1px solid ${i===active?ww.accent+"55":"#0f0f0f"}`,padding:"18px 12px",textAlign:"center",position:"relative"}}
+                <div key={ww.id} className="card v-watch-card"
+                  onClick={()=>{setActive(i);window.scrollTo({top:0,behavior:"smooth"});}} style={{background:`linear-gradient(160deg,#0c0c0c,${ww.accent}12)`,border:`1px solid ${i===active?ww.accent+"55":"#0f0f0f"}`,padding:"18px 12px",textAlign:"center",position:"relative"}}
                 >
                   {i===active&&<div style={{position:"absolute",top:8,left:8,width:6,height:6,borderRadius:"50%",background:ww.accent,animation:"gp 2s infinite"}}/>}
                   <div style={{height:155,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12}}>
@@ -515,18 +561,19 @@ export default function VoltWatches() {
             </div>
           </section>
 
-          <section style={{padding:"80px 7%",position:"relative",overflow:"hidden"}}>
+          {/* DNA */}
+          <section className="v-dna-section" style={{padding:"80px 7%",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",inset:0,backgroundImage:`linear-gradient(${w.accent}04 1px,transparent 1px),linear-gradient(90deg,${w.accent}04 1px,transparent 1px)`,backgroundSize:"42px 42px"}}/>
-            <div style={{display:"flex",gap:"8%",alignItems:"center",flexWrap:"wrap",position:"relative"}}>
+            <div className="v-dna-flex" style={{display:"flex",gap:"8%",alignItems:"center",flexWrap:"wrap",position:"relative"}}>
               <div style={{flex:"1 1 380px"}}>
                 <div style={{fontSize:9,color:"#252525",letterSpacing:5,marginBottom:12}}>ADN VOLT</div>
-                <h3 style={{fontSize:50,fontWeight:900,color:"#fff",lineHeight:.95,marginBottom:22}}>
+                <h3 className="v-dna-h3" style={{fontSize:50,fontWeight:900,color:"#fff",lineHeight:.95,marginBottom:22}}>
                   FORGÉE POUR<br/><span style={{color:w.accent}}>L'EXTRÊME.</span>
                 </h3>
                 <p style={{fontSize:14,color:"#383838",lineHeight:1.9,maxWidth:480,fontFamily:"'Barlow',sans-serif",fontWeight:300}}>
                   Chaque pièce VOLT est usinée dans des matériaux Carbon TPT® issus de l'aérospatiale. Mouvements squelette entièrement visibles, vis étoile en titane, boîtier tonneau signature.
                 </p>
-                <div style={{display:"flex",gap:40,marginTop:48,flexWrap:"wrap"}}>
+                <div className="v-dna-stats" style={{display:"flex",gap:40,marginTop:48,flexWrap:"wrap"}}>
                   {[["600","COUCHES CARBON"],["6000G","RÉSISTANCE"],["29g","POIDS MIN"],["100m","ÉTANCHÉITÉ"]].map(([n,l])=>(
                     <div key={l}>
                       <div style={{fontSize:30,fontWeight:900,color:w.accent}}>{n}</div>
@@ -536,7 +583,7 @@ export default function VoltWatches() {
                 </div>
               </div>
               <div style={{flex:"0 0 auto"}}>
-                <img src={w.img} alt={w.name} style={{
+                <img className="v-dna-image" src={w.img} alt={w.name} style={{
                   width:260,objectFit:"contain",
                   filter:`drop-shadow(0 0 50px ${w.glow}) drop-shadow(0 30px 40px rgba(0,0,0,1))`,
                   transform:"rotate(-8deg)",
@@ -545,7 +592,7 @@ export default function VoltWatches() {
             </div>
           </section>
 
-          <footer style={{padding:"22px 6%",borderTop:"1px solid #0a0a0a",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <footer className="v-footer" style={{padding:"22px 6%",borderTop:"1px solid #0a0a0a",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{fontSize:18,fontWeight:900,letterSpacing:7,color:"#141414"}}>VOLT</div>
             <div style={{fontSize:9,color:"#141414",letterSpacing:3}}>© 2026 VOLT HOROLOGY · SWISS MADE</div>
             <div style={{fontSize:9,color:"#141414",letterSpacing:3}}>LIVRAISON · RETOURS · CGV</div>
@@ -555,13 +602,13 @@ export default function VoltWatches() {
 
       {page==="detail"&&(
         <div style={{paddingTop:64,animation:"fadeIn .4s"}}>
-          <div style={{maxWidth:1180,margin:"0 auto",padding:"56px 6%"}}>
+          <div className="v-detail-section" style={{maxWidth:1180,margin:"0 auto",padding:"56px 6%"}}>
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",color:w.accent,cursor:"pointer",fontFamily:"'Barlow Condensed',sans-serif",fontSize:11,letterSpacing:4,marginBottom:52,display:"flex",alignItems:"center",gap:8}}>← COLLECTION</button>
-            <div style={{display:"flex",gap:"7%",alignItems:"flex-start",flexWrap:"wrap"}}>
+            <div className="v-detail-flex" style={{display:"flex",gap:"7%",alignItems:"flex-start",flexWrap:"wrap"}}>
               <div style={{flex:"0 0 auto",display:"flex",flexDirection:"column",alignItems:"center",gap:26}}>
                 <div style={{position:"relative"}}>
                   <div style={{position:"absolute",bottom:"-5%",left:"50%",transform:"translateX(-50%)",width:"50%",height:20,background:w.accent,borderRadius:"50%",filter:"blur(25px)",opacity:.5}}/>
-                  <img src={w.img} alt={w.name} style={{
+                  <img className="v-detail-img" src={w.img} alt={w.name} style={{
                     width:340,objectFit:"contain",
                     filter:`drop-shadow(0 50px 80px rgba(0,0,0,1)) drop-shadow(0 0 60px ${w.glow})`,
                     transform:"rotate(-5deg)",
@@ -586,7 +633,7 @@ export default function VoltWatches() {
                   <span style={{fontSize:9,color:"#252525",letterSpacing:3}}>{w.limited}</span>
                 </div>
                 <div style={{fontSize:11,color:"#252525",letterSpacing:4,marginBottom:6}}>{w.tagline}</div>
-                <h1 style={{fontSize:58,fontWeight:900,color:"#fff",letterSpacing:2,lineHeight:.88,marginBottom:16}}>{w.name}</h1>
+                <h1 className="v-detail-h1" style={{fontSize:58,fontWeight:900,color:"#fff",letterSpacing:2,lineHeight:.88,marginBottom:16}}>{w.name}</h1>
                 <div style={{fontSize:9,color:"#1e1e1e",letterSpacing:4,marginBottom:20}}>{w.ref}</div>
                 <div style={{width:38,height:2,background:w.accent,marginBottom:22}}/>
                 <p style={{fontSize:14,lineHeight:1.8,color:"#484848",marginBottom:34,fontFamily:"'Barlow',sans-serif",fontWeight:300}}>{w.description}</p>
