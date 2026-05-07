@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const W_PINK = "/images/w_pink.webp"
 const W_BLUE_NYLON = "/images/w_blue_nylon.webp"
-const W_GREEN = "/images/w_green.jpg"
+const W_GREEN = "/images/w_green.webp"
 const W_BLUE_BLACK = "/images/w_blue_black.webp"
 const W_CARBON_RED = "/images/w_carbon_red.webp"
 
