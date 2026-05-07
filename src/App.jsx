@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
-const W_PINK = "/images/w_pink.jpg"
-const W_BLUE_NYLON = "/images/w_blue_nylon.jpg"
+const W_PINK = "/images/w_pink.webp"
+const W_BLUE_NYLON = "/images/w_blue_nylon.webp"
 const W_GREEN = "/images/w_green.jpg"
-const W_BLUE_BLACK = "/images/w_blue_black.jpg"
-const W_CARBON_RED = "/images/w_carbon_red.jpg"
+const W_BLUE_BLACK = "/images/w_blue_black.webp"
+const W_CARBON_RED = "/images/w_carbon_red.webp"
 
 const WATCHES = [
   {
