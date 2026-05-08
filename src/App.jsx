@@ -595,7 +595,7 @@ export default function VoltWatches() {
           <footer className="v-footer" style={{padding:"22px 6%",borderTop:"1px solid #0a0a0a",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{fontSize:18,fontWeight:900,letterSpacing:7,color:"#141414"}}>VOLT</div>
             <div style={{fontSize:9,color:"#141414",letterSpacing:3}}>© 2026 VOLT HOROLOGY · SWISS MADE</div>
-            <div style={{fontSize:9,color:"#141414",letterSpacing:3}}>LIVRAISON · RETOURS · CGV</div>
+            <div style={{fontSize:9,color:"#141414",letterSpacing:3,display:"flex",gap:10,flexWrap:"wrap"}}><a href="/legal/mentions.html" style={{color:"#444",textDecoration:"none"}}>MENTIONS</a><span>·</span><a href="/legal/cgv.html" style={{color:"#444",textDecoration:"none"}}>CGV</a><span>·</span><a href="/legal/confidentialite.html" style={{color:"#444",textDecoration:"none"}}>CONFIDENTIALITÉ</a><span>·</span><a href="/legal/retours.html" style={{color:"#444",textDecoration:"none"}}>RETOURS</a></div>
           </footer>
         </div>
       )}
